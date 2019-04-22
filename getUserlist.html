@@ -1,0 +1,233 @@
+
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="ajax.js"></script>
+	<style>
+	#page a{
+		display: inline-block;
+		margin-top: 20px;
+		text-decoration: none;
+		width:98px;
+		height: 30px;
+		font-size: 20px;
+		font-weight: bold;
+		font-family: '楷体';
+		color: tomato;
+	}
+	</style>
+</head>
+<body>	
+	<div id="box">
+		<table border="1" width="800" align="center" id="table" cellspacing="0" cellpadding="0">
+		<!-- 	<tr>
+				<td>openid</td>
+				<td>微信名</td>
+				<td>性别</td>
+				<td>国家</td>
+				<td>省份</td>
+				<td>城市</td>
+				<td>操作</td>
+			</tr> -->
+
+		</table>
+	</div>
+	<div id="page" style="text-align: center">
+		<a href="">首页</a>
+		<a href="">上一页</a>
+		<a href="">下一页</a>
+		<a href="">尾页</a>
+		<!-- <a href="javascript:test('http://localhost:80/php1714/gaoji/day22/list.php?rand=0.2561276820402456&page=5')"></a> -->
+	</div>
+</body>
+	<script type="text/javascript">
+	var oTable = document.getElementById('table');
+	var aA = document.getElementsByTagName('a');
+	ajax({
+		method:'get',
+		url:'getUserlist.php',
+		async:true,
+		data:{page:1},
+		success:success
+
+	});
+	function success(data)
+	{
+		// document.write(data);
+		//z这个data是啥玩意？是不是就是list.php得到的数据
+		oTable.innerHTML = '';
+		///
+		var oTrb = document.createElement('tr');
+		//创建td oOpenid
+		var oOpenid = document.createElement('td');
+		oOpenid.innerHTML = 'openid';
+		//nickname
+		var oNickname = document.createElement('td');
+		oNickname.innerHTML = '微信名';
+		//sex
+		var oSex = document.createElement('td');
+		oSex.innerHTML = '性别';
+		//country
+		var oCountry = document.createElement('td');
+		oCountry.innerHTML ='国家';
+		//province
+		var oProvince = document.createElement('td');
+		oProvince.innerHTML = '省份';
+		//city
+		var oCity = document.createElement('td');
+		oCity.innerHTML = '城市';
+		var oBtn = document.createElement('td');
+		oBtn.innerHTML = '操作';
+		//
+		oTrb.appendChild(oOpenid);
+		oTrb.appendChild(oNickname);
+		oTrb.appendChild(oSex);
+		oTrb.appendChild(oCountry);
+		oTrb.appendChild(oProvince);
+		oTrb.appendChild(oCity);
+		oTrb.appendChild(oBtn);
+
+		oTable.appendChild(oTrb);
+		//
+		//转化为js的对象
+		var obj = JSON.parse(data);
+		for (var i in obj.data) {
+			//创建tr
+			var oTr = document.createElement('tr');
+			//创建td
+			var oTd1 = document.createElement('td');
+			//创建td
+			var oTd2 = document.createElement('td');
+			var oTd3 = document.createElement('td');
+			var oTd4 = document.createElement('td');
+			var oTd5 = document.createElement('td');
+			var oTd6 = document.createElement('td');
+			var oTd7 = document.createElement('td');
+			var oButton = document.createElement('button');
+
+			// 给每个td赋值
+			oTd1.innerHTML = obj.data[i].openid;
+			oTd2.innerHTML = obj.data[i].nickname;
+			if (obj.data[i].sex == 1) {
+					oTd3.innerHTML = '男';
+				} else {
+					oTd3.innerHTML = '女';
+				}
+
+			oTd4.innerHTML = obj.data[i].country;
+			oTd5.innerHTML = obj.data[i].province;
+			oTd6.innerHTML = obj.data[i].city;
+			//oButton.innerHTML = '拉黑';
+			
+			//然后再将td放到tr里面 //
+			oTr.appendChild(oTd1);
+			oTr.appendChild(oTd2);
+			oTr.appendChild(oTd3);
+			oTr.appendChild(oTd4);
+			oTr.appendChild(oTd5);
+			oTr.appendChild(oTd6);
+			oTr.appendChild(oTd7);
+
+			oTd7.appendChild(oButton);
+			oTable.appendChild(oTr);
+
+
+			///拉黑操作
+			// 拉黑与为拉黑
+			// 拉黑与为拉黑
+			
+			if(obj.data[i].isdel == 0){
+				//1是已经被拉黑的，0是没有被拉黑的			
+				oButton.innerHTML = '拉黑';
+				oButton.onclick = function () {
+					if (this.innerHTML == '拉黑') {							
+						this.innerHTML = '取消拉黑';
+						lahei(this.parentNode.parentNode.children[0].innerHTML);		
+					} else if (this.innerHTML == '取消拉黑') {							
+						this.innerHTML = '拉黑';
+						qvxiao(this.parentNode.parentNode.children[0].innerHTML);	
+					}
+				};
+				
+			} else {
+				oButton.innerHTML = '取消拉黑';		
+				oButton.onclick = function () {
+			
+					if (this.innerHTML == '拉黑') {
+						this.innerHTML = '取消拉黑';
+						lahei(this.parentNode.parentNode.children[0].innerHTML);
+					} else if (this.innerHTML == '取消拉黑') {			
+						this.innerHTML = '拉黑';
+						qvxiao(this.parentNode.parentNode.children[0].innerHTML);
+					}
+				};
+					
+			}
+		
+				
+			////以上是拉黑
+
+		}
+		//通过obj.allPage依次给上面每个a标签的href属性设置
+		var oPage =  obj.allPage;
+		var i = 0;
+		for (var name in oPage) {
+			//console.log(name);
+			aA[i].href = 'javascript:test(\'' +oPage[name] +'\')';
+			i++;
+		}
+	}
+	function test(url)
+	{
+		ajax({
+			method:'get',
+			url:url,
+			async:true,
+			data:null,
+			success:success
+		});
+	}
+
+
+	// 拉黑
+	function lahei(openid)
+	{
+		ajax({
+			method:'get',
+			url:'lahei.php',
+			async:true,
+			data:{openid:openid},
+			success:sucLahei
+		});
+		function sucLahei(str)
+		{
+			var obj = JSON.parse(str);
+			if (obj['state'] == 1) {
+				console.log('拉黑成功');
+
+			}
+		}
+	}
+	// 取消拉黑
+	function qvxiao(openid)
+	{
+		ajax({
+			method:'get',
+			url:'qvxiaolh.php',
+			async:true,
+			data:{openid:openid},
+			success:suQvxiao
+		});
+		function suQvxiao(str)
+		{
+			var obj = JSON.parse(str);
+			//obj.state = 1;
+			if (obj['state'] == 1) {
+				console.log('取消拉黑成功');
+
+			}
+		}
+	}
+	</script>
+</html>

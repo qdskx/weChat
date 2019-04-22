@@ -1,0 +1,40 @@
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>群发消息</title>
+		<style>
+			body{
+				background: url(../public/011.jpg);
+				/*width: 100%;*/
+			}
+			form{
+				position: absolute;
+				top:30%;
+				left: 21%;
+			}
+			input{
+				width:600px;
+				height: 120px;
+				border: none;
+				border-radius: 30px;
+				background: #fff;
+				opacity: 0.5;
+				font-size: 50px;
+				font-family: '楷体';
+				margin-bottom: 30px;
+				padding-left: 10px;
+			}	
+		</style>	
+	</head>
+
+	<body>
+		<form action="sendAll.php" method='post'>
+			
+			<input type="text" name='word' placeholder="请输入您要群发的消息" />
+			<input type="submit" name='sub' value="群发" />
+
+		</form>
+	</body>
+
+</html>

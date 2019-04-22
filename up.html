@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>素材管理-微信公众号</title>
+	<meta charset="utf-8"/>
+	<script type="text/javascript" src="ajax.js"></script>
+	<style type="text/css" media="screen">
+		tr {
+			height: 60px;
+		}
+		#page a{
+			display: inline-block;
+			margin-right: 10px;
+			color:tomato;
+		}
+		form{
+			margin-left:450px;
+		}
+		input{
+			width:300px;
+			height: 35px;
+			border: none;
+			border-radius: 30px;
+			background: tomato;
+			opacity: 0.5;
+			font-size: 20px;
+			font-family: '楷体';
+			margin-bottom: 25px;
+			padding-top: 2px;
+			padding-left: 13px;
+		}
+	</style>
+</head>
+<body>
+	<form action="post.php" method="post" enctype="multipart/form-data">
+	    <input type="file" name="file" ></br>
+	    <input type="submit" value="上传">
+ 	 </form>
+ 	
+	<table id="table" border="1" cellspacing="0" style="test-align:center; margin: 50px auto; width: 800px;">
+	</table>
+	<div id="page" style="text-align: center;">
+		<a href="">首页</a>
+		<a href="">上一页</a>
+		<a href="">下一页</a>
+		<a href="">尾页</a>
+	</div>
+</body>
+	<script type="text/javascript">
+		var oTable = document.getElementById('table');
+		var oA = document.getElementsByTagName('a');
+		var oDiv = document.getElementById('box');
+		// 展示用的方法，查
+		ajax({
+			method:'post',
+			url:'up.php',
+			async:true,
+			data:{page:1},
+			success:success
+		});
+		function success(data)
+		{
+			 // console.log(data);
+			oTable.innerHTML = '';//清空
+			// 创建表头行标签和列标签
+			var iTr = document.createElement('tr');
+			var iTh1 = document.createElement('th');
+			iTh1.innerHTML = 'MId';
+			var iTh2 = document.createElement('th');
+
+			var iTh3 = document.createElement('th');
+			iTh3.innerHTML = '上传时间';
+			var iTh4 = document.createElement('th');
+			iTh4.innerHTML = '上传图片';
+			// 添加表头行标签和列标签
+			oTable.appendChild(iTr);
+			iTr.appendChild(iTh1);
+			// iTr.appendChild(iTh2);
+			iTr.appendChild(iTh3);
+			iTr.appendChild(iTh4);
+			// 添加数据
+			var obj = JSON.parse(data);
+			// console.log(data);
+			for (var j in obj.data)
+			{
+				// 创建行标签和列标签
+				var oTr = document.createElement('tr');
+				var oID = document.createElement('td');
+				var oMidia = document.createElement('td');
+				var oTime = document.createElement('td');
+				var oImg = document.createElement('td');
+				var oImage = document.createElement('img');
+				oTr.align = 'center';
+				oImage.style.width = '100px';
+				oImage.style.height = '100px';
+				// 添加属性
+				oID.innerHTML = obj.data[j].mid;
+				// oMidia.innerHTML = obj.data[j].madia;
+				oTime.innerHTML = obj.data[j].time;
+				oImage.src = obj.data[j].img;
+				// 添加标签
+				oTable.appendChild(oTr);
+				oTr.appendChild(oID);
+				// oTr.appendChild(oMidia);
+				oTr.appendChild(oTime);
+				oTr.appendChild(oImg);
+				oImg.appendChild(oImage);
+				
+			}
+			
+			// 把allpage的链接赋值到a标签上
+			var oPage = obj.page;
+			var i = 0;
+			for (var name in oPage) {
+				oA[i].href = 'javascript:test(\'' + oPage[name] + '\')';
+				i++;
+			}
+		
+		 }
+		function test(url)
+		{
+			ajax({
+				method:'get',
+				url:url,
+				async:true,
+				data:null,
+				success:success
+			});
+		}
+		
+		
+	</script>
+</html>

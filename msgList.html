@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>消息查看-微信公众号</title>
+	<meta charset="utf-8"/>
+	<script type="text/javascript" src="ajax.js"></script>
+	<style type="text/css" media="screen">
+		.title {
+			color: white;
+			text-decoration: none;
+		}
+		tr {
+			height: 60px;
+		}
+		#page a{
+			display: inline-block;
+			margin-top: 20px;
+			text-decoration: none;
+			width:98px;
+			height: 30px;
+			font-size: 20px;
+			font-weight: bold;
+			font-family: '楷体';
+			color: tomato;
+		}		
+	</style>
+</head>
+<body>
+<!-- 	<div style="width: 90%; height: 50px; background-color: #62b900; color: white; font-size: 20px;line-height: 50px; margin: 0 auto; padding-left: 20px;">
+	<a class="title" href="getUserList.html">用户管理/消息群发</a>&nbsp;&nbsp;
+	<a class="title" href="shitList.html">黑名单管理</a>&nbsp;&nbsp;
+	<a class="title" href="msgList.html" style="background-color: white; color: #62b900 ;">消息展示</a>&nbsp;&nbsp;
+	<a class="title" href="#">资料管理</a>&nbsp;&nbsp;
+</div> -->
+	<table id="table" border="1" cellspacing="0" style="text-align:center; margin: 50px auto 0; width: 900px;">
+	</table>
+	<div id="page" style="text-align: center;">
+		<a class="a" href="">首页</a>
+		<a class="a" href="">上一页</a>
+		<a class="a" href="">下一页</a>
+		<a class="a" href="">尾页</a>
+	</div>
+</body>
+	<script type="text/javascript">
+		var oTable = document.getElementById('table');
+		var oA = document.getElementsByClassName('a');
+		// 展示用的方法，查
+		ajax({
+			method:'post',
+			url:'getMsgList.php',
+			async:true,
+			data:{page:1},
+			success:success
+		});
+		function success(data)
+		{
+			oTable.innerHTML = '';
+			// 创建表头行标签和列标签
+			var iTr = document.createElement('tr');
+			var iTh1 = document.createElement('th');
+			iTh1.innerHTML = 'ID';
+			var iTh2 = document.createElement('th');
+			iTh2.innerHTML = '用户ID';
+			iTh2.style.width = 200 + 'px';
+			var iTh3 = document.createElement('th');
+			iTh3.innerHTML = '接收时间';
+			var iTh4 = document.createElement('th');
+			iTh4.innerHTML = '消息类型';
+			var iTh5 = document.createElement('th');
+			iTh5.innerHTML = '文本内容';
+		
+			var iTh6 = document.createElement('th');
+			iTh6.innerHTML = '消息ID';
+
+			var iTh7 = document.createElement('th');
+			iTh7.innerHTML = '操作';
+			// 添加表头行标签和列标签
+			oTable.appendChild(iTr);
+			iTr.appendChild(iTh1);
+			iTr.appendChild(iTh2);
+			iTr.appendChild(iTh3);
+			iTr.appendChild(iTh4);
+			iTr.appendChild(iTh5);
+			iTr.appendChild(iTh6);
+			iTr.appendChild(iTh7);
+	
+
+			// 添加数据
+			var obj = JSON.parse(data);
+			// console.log(obj);
+			for (var j in obj.data)
+			{
+				// 创建行标签和列标签
+				var oTr = document.createElement('tr');
+				var mID = document.createElement('td');
+				var mOpenID = document.createElement('td');
+				var mTime = document.createElement('td');
+				var mType = document.createElement('td');
+				var mContent = document.createElement('td');
+				
+				var oBtn = document.createElement('button');
+					oBtn.innerHTML = '删除';
+					oBtn.style.width = '30px';
+					oBtn.style.width = '90px';
+					oBtn.style.marginTop = '15px';
+				var mMID= document.createElement('td');
+				// 添加属性
+				mID.innerHTML = obj.data[j].mid;
+				//openid
+				mOpenID.innerHTML = obj.data[j].openid;
+				mOpenID.style.width = 150 + 'px';
+				mOpenID.style.wordWrap = 'break-word';
+				mOpenID.style.wordBreak = 'break-all';
+				//content
+				mContent.innerHTML = obj.data[j].content;
+			
+				//mid
+				mMID.innerHTML = obj.data[j].msgid;
+				mMID.style.width = 100 + 'px';
+				mMID.style.wordWrap = 'break-word';
+				mMID.style.wordBreak = 'break-all';
+				//time
+				mTime.innerHTML = obj.data[j].time;
+				mTime.style.width = 100 + 'px';
+				mTime.style.wordWrap = 'break-word';
+				mTime.style.wordBreak = 'break-all';
+				// 需要转换的属性
+				if (obj.data[j].type == 'text') {
+					mType.innerHTML = '文本类';
+				} else {
+					mType.innerHTML = '其他类';
+				}
+				
+	
+			////删除操作
+				oBtn.onclick = function ()
+				{
+					 
+					var oBtnP = this.parentNode;
+					oTable.removeChild(oBtnP);
+					//deletes(this.uid);
+
+					//console.log(oBtnP.children[0].innerHTML);
+					deletes(oBtnP.children[0].innerHTML);
+				}
+			
+				// 添加标签
+				oTable.appendChild(oTr);
+				oTr.appendChild(mID);
+				oTr.appendChild(mOpenID);
+				oTr.appendChild(mTime);
+				oTr.appendChild(mType);
+				oTr.appendChild(mContent);
+				
+
+				
+				oTr.appendChild(mMID);
+				oTr.appendChild(oBtn);
+			}
+			
+			// 把allpage的链接赋值到a标签上
+			var oPage = obj.allPage;
+			var i = 0;
+			for (var name in oPage) {
+				oA[i].href = 'javascript:test(\'' + oPage[name] + '\')';
+				i++;
+			}
+		
+		 }
+		 function test(url)
+		{
+			ajax({
+				method:'get',
+				url:url,
+				async:true,
+				data:null,
+				success:success
+			});
+		}
+
+
+		///删除
+		//删除的函数，在查询那里onclick的时候点击。
+		function deletes(str) {
+			ajax({
+				method:'get',
+				url:'delete.php',
+				async:true,
+				data:{mid:str},
+				success:succe
+			});
+			function succe(data) {
+				//var obj = JSON.parse(data);
+			}
+		}
+	
+	</script>
+</html>
